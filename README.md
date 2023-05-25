@@ -1,9 +1,17 @@
-Simple Shell
+# simple_shell
+A simple Unix shell implementation in C, created by Abdul Aziz Abdullah and Joshuakoome .
+👋 Hey there! Welcome to the Simple Shell project! 🐚
 
-List of allowed functions and system calls access (man 2 access) chdir (man 2 chdir) close (man 2 close) closedir (man 3 closedir) execve (man 2 execve) exit (man 3 exit) _exit (man 2 _exit) fflush (man 3 fflush) fork (man 2 fork) free (man 3 free) getcwd (man 3 getcwd) getline (man 3 getline) getpid (man 2 getpid) isatty (man 3 isatty) kill (man 2 kill) malloc (man 3 malloc) open (man 2 open) opendir (man 3 opendir) perror (man 3 perror) read (man 2 read) readdir (man 3 readdir) signal (man 2 signal) stat (__xstat) (man 2 stat) lstat (__lxstat) (man 2 lstat) fstat (__fxstat) (man 2 fstat) strtok (man 3 strtok) wait (man 2 wait) waitpid (man 2 waitpid) wait3 (man 2 wait3) wait4 (man 2 wait4) write (man 2 write) Compilation Your shell will be compiled this way:
+This project is a fun and challenging task that will put your programming skills to the test. The Simple Shell is a basic command-line interface that allows users to enter commands and interact with their computer in a more hands-on way.
 
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh Testing Your shell should work like this in interactive mode:
+# Getting Started 🚀
+To get started, simply clone this repository and compile the code. Once you've done that, you can run the shell and start entering commands!
 
-$ ./hsh ($) /bin/ls hsh main.c shell.c ($) ($) exit $ But also in non-interactive mode:
+# Usage 💻
+The Simple Shell supports a variety of basic commands, such as 'cd' for changing directories, 'ls' for listing files, and 'echo' for printing text to the screen. It also supports some more advanced features, like piping and redirection.
 
-$ echo "/bin/ls" | ./hsh hsh main.c shell.c test_ls_2 $ $ cat test_ls_2 /bin/ls /bin/ls $ $ cat test_ls_2 | ./hsh hsh main.c shell.c test_ls_2 hsh main.c shell.c test_ls_2 $ Checks The Checker will be released at the end of the project (1-2 days before the deadline). We strongly encourage the entire class to work together to create a suite of checks covering both regular tests and edge cases for each task. See task 8. Test suite.
+# Need Help? 🤔
+If you're having trouble with the Simple Shell, don't worry! There are plenty of resources available to help you out. Check out the documentation, or reach out to the community for support. We're here to help!
+
+# Conclusion 🎉
+Thank you for checking out the Simple Shell project! We hope you have fun exploring the world of command-line interfaces and learning more about how your computer works. Happy coding! 🚀
