@@ -1,189 +1,74 @@
 #include "shell.h"
 
-
 /**
- * add_node - Entry point
- * Description: Adds new node at the beginning of the list
- * @head: Pointer to the head of the list_t list
- * @str: String added to the list_t list
- * @len: Length used by list
+ * invlove - determines if the shell is in interactive mode
+ * @data:  pointer to struct
  *
- * Return: the address of the new element, or NULL if it failed
+ * Return: 1 if in interactive mode, 0 otherwise
  */
-
-list_t *add_node(list_t **head, const char *str, int len)
+int invlove(info_t *data)
 {
-	list_t *new;
-
-	new = malloc(sizeof(list_t));
-	if (!new)
-	{
-		return (NULL);
-	}
-	/* Duplicate the string */
-	new->str = _strdup(str);
-	if (new->str == NULL)
-	{
-		free(new);
-		return (NULL);
-	}
-	/* Count the number of characters within square brackets */
-	len = 0;
-	while (str[len])
-		len++;
-	/* Set next pointer of new node to current head */
-	new->next = *head;
-	new->len = len;
-	/* Set head to point to the new node */
-	*head = new;
-
-	return (new);
+	return (isatty(STDIN_FILENO) && data->readingFd <= 2);
 }
 
 /**
- * add_node_end - Entry point
- * Description: Adds new node at the end of a list_t list
- * @head: Pointer to pointer to the head node of the list
- * @str: String stored in the new node
- * Return: Address of the new element, or NULL if it failed
+ * we_believe - determines if a character is a delimiter
+ * @c: the character to be checked
+ * @limitme: the string containing delimiters
+ * Return: 1 if the character is a delimiter, 0 otherwise
  */
-
-list_t *add_node_end(list_t **head, const char *str)
+int we_believe(char c, char *limitme)
 {
-	list_t *new, *current;
-
-	if (!head)
-		return (NULL);
-	new = malloc(sizeof(list_t));
-	if (!new)
-		return (NULL);
-	/* Duplicate the string */
-	new->str = _strdup(str);
-	if (!new->str)
-	{
-		free(new);
-		return (NULL);
-	}
-	/* Count the number of characters within square brackets */
-	new->len = _strlen(str);
-	new->next = NULL;
-	/* If the list is empty, the new node becomes the head */
-	if (!*head)
-	{
-		*head = new;
-		return (new);
-	}
-	current = *head;
-	/* Traverse the list until the last node is reached */
-	while (current->next)
-	{
-		current = current->next;
-	}
-	/* Add the new node to the end of the list */
-	current->next = new;
-	return (new);
+	while (*limitme)
+		if (*limitme++ == c)
+			return (1);
+	return (0);
 }
 
 /**
- * print_list_str - Entry point
- * Description: Prints all the elements of list_t list
- * @h: Pointer to head of the list
- * Return: Number of nodes in list
+ *isAlphabetic - checks if a character is alphabetic
+ *@c: the character to be checked
+ *Return: 1 if the character is alphabetic, 0 otherwise
  */
 
-size_t print_list_str(const list_t *h)
+int isAlphabetic(int c)
 {
-	size_t count = 0;
-
-	while (h)
-	{
-		_puts(h->str ? h->str : "(nil)");
-		_puts("\n");
-		count++;
-		h = h->next;
-	}
-
-	return (count);
-}
-
-/**
- * delete_node_at_index - Entry point
- * Description: Deletes the node at index index of a listint_t linked list.
- * @head: Pointer to pointer of first node in linked list
- * @index: Index of the node that should be deleted.
- *
- * Return: 1 if it succeeded, -1 if it failed
- */
-
-int delete_node_at_index(listint_t **head, unsigned int index)
-{
-	listint_t *temp, *current;
-	unsigned int i;
-	/* Where i is the node */
-
-	/* Checks if head is empty */
-	if (!(*head))
-		return (-1);
-	if (index == 0)
-	{
-		temp = *head;
-		*head = (*head)->next;
-		free(temp);
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 		return (1);
-	}
-	/* Checks node before it get removed */
-	current = *head;
-	for (i = 0; i < (index - 1); i++)
-	{
-		/* Checks if index is out of range */
-		if (!current->next)
-			return (-1);
-		current = current->next;
-	}
-	/* Delete the node at index */
-	temp = current->next;
-	current->next = temp->next;
-	free(temp);
-	/* Success */
-	return (1);
+	else
+		return (0);
 }
 
 /**
- * free_list - Entry point
- * Description: Frees a linked list
- * @head: A pointer to the head of the list
+ *convertToInteger - converts a string to an integer
+ *@s: string converted
+ *Return: 0 if there are no num in the string, the converted number otherwise
  */
 
-void free_list(list_t *head)
+int convertToInteger(char *s)
 {
-	list_t *current;
+	int a, tive = 1, onOff = 0, outta;
+	unsigned int answer = 0;
 
-	while (head)
+	for (a = 0;  s[a] != '\0' && onOff != 2; a++)
 	{
-		current = head->next;
-		free(head->str);
-		free(head);
-		head = current;
+		if (s[a] == '-')
+			tive *= -1;
+
+		if (s[a] >= '0' && s[a] <= '9')
+		{
+			onOff = 1;
+			answer *= 10;
+			answer += (s[a] - '0');
+		}
+		else if (onOff == 1)
+			onOff = 2;
 	}
-}
 
-/**
- * list_len - Entry point
- * Description: Returns number of elements in linked list_t list
- * @h: Pointer to the head of the linked list
- * Return: Number of nodes in linked list
- */
+	if (tive == -1)
+		outta = -answer;
+	else
+		outta = answer;
 
-size_t list_len(const list_t *h)
-{
-	size_t count_nodes = 0;
-
-	while (h != NULL)
-	{
-		/* Increment count for each node */
-		count_nodes++;
-		/* Next node */
-		h = h->next;
-	}
-	return (count_nodes);
+	return (outta);
 }
