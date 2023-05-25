@@ -1,24 +1,86 @@
 #include "shell.h"
 
 /**
- * _strcmp - Entry point
- * Description: Compares two strings
- * @s1: Char
- * @s2: Char
- * Return: char
+ * isCmd - determines if a file is an executable command
+ * @data: the data struct
+ * @path: path to the file
+ *
+ * Return: 1 if true, 0 otherwise
  */
-
-int _strcmp(char *s1, char *s2)
+int isCmd(info_t *data, char *path)
 {
-	int i = 0;
+	struct stat st;
 
-	while (s1[i] == s2[i])
+	(void)data;
+	if (!path || stat(path, &st))
+		return (0);
+
+	if (st.st_mode & S_IFREG)
 	{
-		if (s1[i] == '\0')
-		{
-			return (0);
-		}
-		i++;
+		return (1);
 	}
-	return (s1[i] - s2[i]);
+	return (0);
+}
+
+/**
+ * duplicationJustu - duplicates characters
+ * @pathstr: the PATH string
+ * @start: starting index
+ * @stop: stopping index
+ *
+ * Return: pointer to fresh fender
+ */
+char *duplicationJustu(char *pathstr, int start, int stop)
+{
+	static char buffed[1024];
+	int a = 0, k = 0;
+
+	for (k = 0, a = start; a < stop; a++)
+		if (pathstr[a] != ':')
+			buffed[k++] = pathstr[a];
+	buffed[k] = 0;
+	return (buffed);
+}
+
+/**
+ * locate_path - finds this cmd in the PATH string
+ * @data: the data struct
+ * @pathstr: the PATH string
+ * @cmd: the cmd to find
+ *
+ * Return: full path of cmd if found or NULL
+ */
+char *locate_path(info_t *data, char *pathstr, char *cmd)
+{
+	int a = 0, curr_pos = 0;
+	char *path;
+
+	if (!pathstr)
+		return (NULL);
+	if ((stringLen(cmd) > 2) && beginWIth(cmd, "./"))
+	{
+		if (isCmd(data, cmd))
+			return (cmd);
+	}
+	while (1)
+	{
+		if (!pathstr[a] || pathstr[a] == ':')
+		{
+			path = duplicationJustu(pathstr, curr_pos, a);
+			if (!*path)
+				strConcat(path, cmd);
+			else
+			{
+				strConcat(path, "/");
+				strConcat(path, cmd);
+			}
+			if (isCmd(data, path))
+				return (path);
+			if (!pathstr[a])
+				break;
+			curr_pos = a;
+		}
+		a++;
+	}
+	return (NULL);
 }
